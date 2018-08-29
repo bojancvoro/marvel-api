@@ -1,12 +1,13 @@
 import React from "react";
 import ResultsItem from "./resultsItem";
+import { connect } from "react-redux";
 
-const Results = ({ searchResults, handleAddBookmark, error }) => {
+const Results = ({ results, handleAddBookmark, error }) => {
     return (
         <div>
             {error ? error.measage :
                 <div>
-                    {searchResults.map((character, i) => {
+                    {results.map((character, i) => {
                         return (
                             <ResultsItem
                                 handleAddBookmark={handleAddBookmark}
@@ -22,4 +23,11 @@ const Results = ({ searchResults, handleAddBookmark, error }) => {
     );
 }
 
-export default Results;
+const mapStateToProps = (state) => {
+    return {
+        results: state.searchResults,
+    }
+}
+
+export default connect(mapStateToProps)(Results);
+

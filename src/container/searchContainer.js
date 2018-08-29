@@ -1,21 +1,25 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import Search from "../presentation/search";
+import { search } from "../actions/search";
 
 class SearchContainer extends Component {
     handleInputChange = (e) => {
         const searchTerm = e.target.value;
-        this.props.searchCharacters(searchTerm);
+        this.props.search(searchTerm);
     }
 
     render() {
         return (
             <div>
                 <Search
-                    handleInputChange={this.handleInputChange}
+                    handleInputChange={(e) => this.handleInputChange(e)}
                 />
             </div>
         );
     }
 }
 
-export default SearchContainer;
+export default connect(null, {
+    search
+})(SearchContainer);
