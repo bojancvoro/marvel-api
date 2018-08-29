@@ -10,19 +10,29 @@ const characterObjectFactory = (character) => ({
 
 const searchHelper = _.debounce((searchTerm, dispatch) => {
     const url = `http://gateway.marvel.com/v1/public/characters?nameStartsWith=${searchTerm}&ts=1&apikey=2e6260d78cf824873fdc7339927d0cf9&hash=78a594b3e2f7ea097defbfc5c9347a43`;
-    fetch(url)
-        .then(response => response.json())
-        .then(data => data.data.results)
-        .then(results => results.map(characterObjectFactory))
-        .then((characters) => {
-            dispatch({
-                type: "SEARCH_CHARACTERS",
-                data: {
-                    characters
-                }
+    if (searchTerm) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => data.data.results)
+            .then(results => results.map(characterObjectFactory))
+            .then((characters) => {
+                dispatch({
+                    type: "SEARCH_CHARACTERS",
+                    data: {
+                        characters
+                    }
+                })
             })
+            .catch(error => console.error(error));
+    } else {
+        const characters = JSON.parse(localStorage.getItem("bookmarkedCharacters"));
+        dispatch({
+            type: "SEARCH_CHARACTERS",
+            data: {
+                characters
+            }
         })
-        .catch(error => console.error(error));
-}, 500)
+    }
+}, 2000);
 
 export const search = (searchTerm) => (dispatch) => searchHelper(searchTerm, dispatch);

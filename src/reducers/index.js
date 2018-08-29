@@ -13,7 +13,8 @@ export default (state = charactersReducerInitialState, action) => {
 		case "BOOKMARKS_LOADED": 
 			return {
 				...state,
-				bookmarks: data.bookmarks,
+				searchResults: data.bookmarks,
+				// better way to do this
 			}
 		case "BOOKMARK_CHARACTER": 
 			return {

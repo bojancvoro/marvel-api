@@ -6,7 +6,8 @@ const ResultsItem = (props) => {
         <div>
             Name: {name}
             <img alt={name} src={image}></img>
-            <button onClick={() => props.handleAddBookmark(props.character)} className={props.index} >Add bookmark</button>}
+            <button onClick={() => props.handleAddBookmark(props.character)} className={props.index}>
+            Add bookmark</button>
         </div>
     );
 }

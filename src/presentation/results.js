@@ -6,6 +6,7 @@ const Results = ({ results, handleAddBookmark, error }) => {
     return (
         <div>
             {error ? error.measage :
+            results ?
                 <div>
                     {results.map((character, i) => {
                         return (
@@ -18,6 +19,7 @@ const Results = ({ results, handleAddBookmark, error }) => {
                         );
                     })}
                 </div>
+                : <div></div>
             }
         </div>
     );
@@ -26,6 +28,7 @@ const Results = ({ results, handleAddBookmark, error }) => {
 const mapStateToProps = (state) => {
     return {
         results: state.searchResults,
+        bookmarks: state.bookmarks
     }
 }
 
