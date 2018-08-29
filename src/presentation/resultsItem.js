@@ -1,15 +1,17 @@
 import React from "react";
 
-const ResultsItem = ({ character }) => {
-    const { name, image, isBookmarked } = character;
+const ResultsItem = (props) => {
+    const { name, image, bookmarked } = props.character;
     return (
-        // need to display image, name, and bookmark status of the character
         <div>
             Name: {name}
             <img alt={name} src={image}></img>
-            {isBookmarked ? "bookmarked" : "not bookmarked"}
+            {bookmarked ? 
+            "Bookmarked character" : 
+            <button onClick={props.handleAddBookmark} className={props.index} >Add bookmark</button>}
         </div>
     );
 }
+
 
 export default ResultsItem; 

@@ -2,18 +2,16 @@ import React, { Component } from "react";
 import Search from "../presentation/search";
 
 class SearchContainer extends Component {
-    handleTakeSearchInput = (e) => {
-        // take search term from element
+    handleInputChange = (e) => {
         const searchTerm = e.target.value;
-        // call searchHandler passed through props and pass it the term
-        this.props.handleFetchData(searchTerm);
+        this.props.searchCharacters(searchTerm);
     }
 
     render() {
         return (
             <div>
                 <Search
-                    handleTakeSearchInput={this.handleTakeSearchInput}
+                    handleInputChange={this.handleInputChange}
                 />
             </div>
         );

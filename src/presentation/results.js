@@ -1,23 +1,23 @@
 import React from "react";
 import ResultsItem from "./resultsItem";
 
-const Results = (props) => {
-    // take results array from state and render the component for each result
-    // need image, name, bookmark status for each character
-
-    // also need stuff to display if no data is yet received (loading),
-    // and if there is an error
+const Results = ({ searchResults, handleAddBookmark, error }) => {
     return (
         <div>
-            Characters:
-            {props.searchResults.map((character, i) => {
-                return (
-                    <ResultsItem
-                        key={i}
-                        character={character}
-                    />
-                );
-            })}
+            {error ? error.measage :
+                <div>
+                    {searchResults.map((character, i) => {
+                        return (
+                            <ResultsItem
+                                handleAddBookmark={handleAddBookmark}
+                                key={i}
+                                character={character}
+                                index={i}
+                            />
+                        );
+                    })}
+                </div>
+            }
         </div>
     );
 }

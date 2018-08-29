@@ -1,13 +1,13 @@
 import React from "react";
 
-const Search = (props) => {
+const Search = ({ handleInputChange }) => {
     return (
         <div>
             <input
                 type="text"
                 placeholder="Search Marvel Characters"
                 autoComplete="off"
-                onChange={props.handleTakeSearchInput}
+                onChange={handleInputChange}
             ></input>
         </div>
     );

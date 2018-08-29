@@ -1,21 +1,18 @@
+import _ from "lodash";
 import React, { Component } from 'react';
 import './App.css';
 import SearchContainer from "./container/searchContainer";
 import Results from './presentation/results';
 
 class App extends Component {
-
-  // publicKey = "2e6260d78cf824873fdc7339927d0cf9";
-  // api = `http://gateway.marvel.com/v1/public/characters?nameStartsWith=${this.searchTerm}&ts=1&apikey=2e6260d78cf824873fdc7339927d0cf9&hash=78a594b3e2f7ea097defbfc5c9347a43`;
-
   constructor(props) {
     super(props);
-    this.state = { results: [], isLoading: true, error: null }
+    this.state = { results: [], error: null }
   }
 
   characterObjectFactory(character) {
-    // creates an object for each character that is added to state
-    // a way to handle "bookmark state" property for each item
+    // creates an object for each character that is added to results array on state
+    // the way to handle "bookmark state" property for each character
     return {
       name: character.name,
       image: `${character.thumbnail.path}.${character.thumbnail.extension}`,
@@ -23,64 +20,62 @@ class App extends Component {
     }
   }
 
-  handleFetchData = (searchTerm) => {
-    // take search term (search container takes and provides search term)
-    // and fetch coresponding data from api
-
-    const characters = [];
-
+  fetchCharacterData(searchTerm) {
     const url = `http://gateway.marvel.com/v1/public/characters?nameStartsWith=${searchTerm}&ts=1&apikey=2e6260d78cf824873fdc7339927d0cf9&hash=78a594b3e2f7ea097defbfc5c9347a43`;
     fetch(url)
       .then(response => response.json())
-      .then(data => data.data.results.forEach((character) => {
-        const characterObj = this.characterObjectFactory(character);
-        characters.push(characterObj);
-      }))
-      .then(() => {
-        this.setState({ results: characters, isLoading: false })
+      .then(data => data.data.results)
+      .then(results => {
+        return results.map((character) => {
+          return this.characterObjectFactory(character);
+        });
       })
-      .catch(error => this.setState(
-        { error, isLoading: false }
-      ));
-    // is there a more elegant way to do this?
-
-    // need throthe
+      .then(characters => { this.setState({ results: characters }) })
+      .catch(error => this.setState({ error }));
   }
 
-  // componentDidMount() {
-  //   this.handleFetchData("adam");
-  // }
+  searchCharacters = (searchTerm) => {
+    if (searchTerm) {
+      this.fetchCharacterData(searchTerm);
+    } else {
+      this.getLocalStorageData();
+    }
+  }
 
-  // handleGetDataFromLocalStorage() {
-  //   // when componet mounts get data stored in local storage and save it into state
-  // }
+  handleAddBookmark = (e) => {
+    const bookmarkedCharacters = JSON.parse(localStorage.getItem("bookmarkedCharacters")) || [];
+    const newBookmarkIndex = e.target.className;
+    const newBookmark = this.state.results[newBookmarkIndex];
+    newBookmark.bookmarked = true;
+    bookmarkedCharacters.push(newBookmark);
+    localStorage.setItem("bookmarkedCharacters", JSON.stringify(bookmarkedCharacters));
+  }
 
-  // handleSearchCharacters(searchTerm) {
-  //   // take search term
-  //  // call handleFetchData passing it the term 
-  // }
+  getLocalStorageData() {
+    const bookmarkedCharacters = JSON.parse(localStorage.getItem("bookmarkedCharacters"));
+    if (bookmarkedCharacters) {
+      this.setState({ results: bookmarkedCharacters });
+    } else {
+      this.setState({ results: [] })
+      // more elegant way to handle showing no characters after search input emptied?
+    }
+  }
 
-  // handeAddBookmark() {
-  //   // take item and save it to local storage
-  // }
-
-
-  // componentDidMount() {
-  //   // take data from local storage and save it into state
-  //   handleGetDataFormLocalStorage();
-  // }
-
+  componentDidMount() {
+    this.getLocalStorageData();
+  }
 
   render() {
-    const { results, isLoading, error } = this.state;
+    const { results, error } = this.state;
+    const searchCharacters = _.debounce((searchTerm) => { this.searchCharacters(searchTerm) }, 2000);
     return (
       <div className="App">
         <SearchContainer
-          handleFetchData={this.handleFetchData}
+          searchCharacters={searchCharacters}
         />
         <Results
+          handleAddBookmark={this.handleAddBookmark}
           searchResults={results}
-          isLoading={isLoading}
           error={error}
         />
       </div>
